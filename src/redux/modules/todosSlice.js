@@ -20,9 +20,9 @@ export const getTodos = createAsyncThunk("todos/getTodos", async (payload, thunk
 export const postTodos = createAsyncThunk("todos/postTodos", async ({ title, content }, thunkAPI) => {
   try {
     const data = await axios.post("http://localhost:3001/todos", {
+      id: Date.now(),
       title,
       content,
-      id: Date.now(),
     });
     return thunkAPI.fulfillWithValue(data.data);
   } catch (err) {
@@ -30,10 +30,10 @@ export const postTodos = createAsyncThunk("todos/postTodos", async ({ title, con
   }
 });
 
-export const deleteTodos = createAsyncThunk("todos/deleteTodos", async (postId, thunkAPI) => {
+export const deleteTodos = createAsyncThunk("todos/deleteTodos", async (id, thunkAPI) => {
   try {
-    const data = await axios.delete(`http://localhost:3001/todos?id=${postId}`);
-    return thunkAPI.fulfillWithValue(data.data);
+    await axios.delete(`http://localhost:3001/todos/${id}`);
+    return thunkAPI.fulfillWithValue(id);
   } catch (err) {
     return thunkAPI.rejectWithValue(err);
   }
@@ -73,7 +73,7 @@ export const todosSlice = createSlice({
     },
     [deleteTodos.fulfilled]: (state, action) => {
       state.isLoading = false;
-      state.todos = state.filter((v) => v.id !== action.payload);
+      state.todos = state.todos.filter((v) => v.id !== action.payload);
     },
     [deleteTodos.rejected]: (state, action) => {
       state.isLoading = false;
