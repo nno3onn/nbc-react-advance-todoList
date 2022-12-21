@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { __getTodos } from "../redux/modules/todosSlice";
+import { getTodos } from "../redux/modules/todosSlice";
 
 const TodoList = () => {
   const dispatch = useDispatch();
   const { isLoading, error, todos } = useSelector((state) => state.todos);
 
   useEffect(() => {
-    dispatch(__getTodos());
+    dispatch(getTodos());
   }, [dispatch]);
 
   if (isLoading) {
@@ -19,11 +19,11 @@ const TodoList = () => {
   }
 
   return (
-    <div>
+    <>
       {todos.map((todo) => (
         <div key={todo.id}>{todo.title}</div>
       ))}
-    </div>
+    </>
   );
 };
 

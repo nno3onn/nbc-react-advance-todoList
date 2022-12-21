@@ -7,8 +7,9 @@ const initialState = {
   error: null,
 };
 
-export const __getTodos = createAsyncThunk("todos/getTodos", async (payload, thunkAPI) => {
+export const getTodos = createAsyncThunk("todos/getTodos", async (payload, thunkAPI) => {
   try {
+    console.log(payload);
     const data = await axios.get("http://localhost:3001/todos");
     return thunkAPI.fulfillWithValue(data.data);
   } catch (err) {
@@ -16,11 +17,12 @@ export const __getTodos = createAsyncThunk("todos/getTodos", async (payload, thu
   }
 });
 
-export const __postTodos = createAsyncThunk("todos/postTodos", async (payload, thunkAPI) => {
+export const postTodos = createAsyncThunk("todos/postTodos", async ({ title, content }, thunkAPI) => {
   try {
-    console.log(payload);
     const data = await axios.post("http://localhost:3001/todos", {
-      payload,
+      title,
+      content,
+      id: Date.now(),
     });
     return thunkAPI.fulfillWithValue(data.data);
   } catch (err) {
@@ -28,9 +30,8 @@ export const __postTodos = createAsyncThunk("todos/postTodos", async (payload, t
   }
 });
 
-export const __deleteTodos = createAsyncThunk("todos/deleteTodos", async (postId, thunkAPI) => {
+export const deleteTodos = createAsyncThunk("todos/deleteTodos", async (postId, thunkAPI) => {
   try {
-    console.log(postId);
     const data = await axios.delete(`http://localhost:3001/todos?id=${postId}`);
     return thunkAPI.fulfillWithValue(data.data);
   } catch (err) {
@@ -42,42 +43,42 @@ export const todosSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(__getTodos.pending, (state) => {
+  extraReducers: {
+    [getTodos.pending]: (state) => {
       state.isLoading = true;
-    });
-    builder.addCase(__getTodos.fulfilled, (state, action) => {
+    },
+    [getTodos.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.todos = action.payload;
-    });
-    builder.addCase(__getTodos.rejected, (state, action) => {
+    },
+    [getTodos.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-    });
+    },
 
-    builder.addCase(__postTodos.pending, (state) => {
+    [postTodos.pending]: (state) => {
       state.isLoading = true;
-    });
-    builder.addCase(__postTodos.fulfilled, (state, action) => {
+    },
+    [postTodos.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.todos = [...state.todos, action.payload];
-    });
-    builder.addCase(__postTodos.rejected, (state, action) => {
+    },
+    [postTodos.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-    });
+    },
 
-    builder.addCase(__deleteTodos.pending, (state) => {
+    [deleteTodos.pending]: (state) => {
       state.isLoading = true;
-    });
-    builder.addCase(__deleteTodos.fulfilled, (state, action) => {
+    },
+    [deleteTodos.fulfilled]: (state, action) => {
       state.isLoading = false;
       state.todos = state.filter((v) => v.id !== action.payload);
-    });
-    builder.addCase(__deleteTodos.rejected, (state, action) => {
+    },
+    [deleteTodos.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
-    });
+    },
   },
 });
 
