@@ -9,7 +9,6 @@ const initialState = {
 
 export const getTodos = createAsyncThunk("todos/getTodos", async (payload, thunkAPI) => {
   try {
-    console.log(payload);
     const data = await axios.get("http://localhost:3001/todos");
     return thunkAPI.fulfillWithValue(data.data);
   } catch (err) {
@@ -73,7 +72,7 @@ export const todosSlice = createSlice({
     },
     [deleteTodos.fulfilled]: (state, action) => {
       state.isLoading = false;
-      state.todos = state.todos.filter((v) => v.id !== action.payload);
+      state.todos = state.todos.filter((todo) => todo.id !== action.payload);
     },
     [deleteTodos.rejected]: (state, action) => {
       state.isLoading = false;

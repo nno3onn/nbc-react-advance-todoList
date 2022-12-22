@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-const Nav = () => <Block> React Todo List</Block>;
+const Nav = () => <NavContainer> React Todo List</NavContainer>;
 
-const Block = styled.div`
+const NavContainer = styled.div`
   width: 100%;
   background-color: #45c4b0;
   height: 80px;
