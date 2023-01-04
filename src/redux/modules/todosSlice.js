@@ -29,6 +29,15 @@ export const postTodos = createAsyncThunk("todos/postTodos", async ({ title, con
   }
 });
 
+export const updateTodos = createAsyncThunk("todos/updateTodos", async ({ id, title, content }, thunkAPI) => {
+  try {
+    await axios.patch(`http://localhost:3001/todos/${id}`, { title, content });
+    return thunkAPI.fulfillWithValue({ id, title, content });
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err);
+  }
+});
+
 export const deleteTodos = createAsyncThunk("todos/deleteTodos", async (id, thunkAPI) => {
   try {
     await axios.delete(`http://localhost:3001/todos/${id}`);
@@ -63,6 +72,23 @@ export const todosSlice = createSlice({
       state.todos = [...state.todos, action.payload];
     },
     [postTodos.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+    [updateTodos.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [updateTodos.fulfilled]: (state, action) => {
+      const { id, title, content } = action.payload;
+      state.isLoading = false;
+      const newTodos = state.todos.map((todo) => {
+        if (todo.id === id) return { ...todo, title, content };
+        return todo;
+      });
+      state.todos = newTodos;
+    },
+    [updateTodos.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },

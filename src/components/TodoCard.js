@@ -1,18 +1,29 @@
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { deleteTodos } from "../redux/modules/todosSlice";
+import useTodo from "../hooks/useTodo";
 
 const TodoCard = ({ data: { id, title, content } }) => {
-  const dispatch = useDispatch();
-  const handleDeleteTodo = () => {
-    dispatch(deleteTodos(id));
-  };
+  const { isEdit, editTitle, editContent, handleEditTitle, handleEditContent, handleUpdateTodo, handleDeleteTodo, handleIsEdit } = useTodo({
+    id,
+    title,
+    content,
+  });
 
   return (
     <Container>
-      <h3>{title}</h3>
-      <Content>{content}</Content>
+      {isEdit ? (
+        <>
+          <input value={editTitle} onChange={handleEditTitle} />
+          <input value={editContent} onChange={handleEditContent} />
+        </>
+      ) : (
+        <>
+          <h3>{title}</h3>
+          <Content>{content}</Content>
+        </>
+      )}
+
       <ButtonWrapper>
+        {isEdit ? <DeletBtn onClick={() => handleUpdateTodo()}>완료</DeletBtn> : <DeletBtn onClick={handleIsEdit}>수정</DeletBtn>}
         <DeletBtn onClick={() => handleDeleteTodo(id)}>삭제</DeletBtn>
       </ButtonWrapper>
     </Container>
