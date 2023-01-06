@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { postTodos } from "../redux/modules/todosSlice";
+import useInput from "./useInput";
 
 const useInputs = () => {
   const dispatch = useDispatch();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-
-  const changeTitle = ({ target: { value } }) => setTitle(value);
-  const changeContent = ({ target: { value } }) => setContent(value);
+  const [title, setTitle, changeTitle] = useInput();
+  const [content, setContent, changeContent] = useInput();
 
   const handlePostTodo = () => {
     if (!title || !content) {
