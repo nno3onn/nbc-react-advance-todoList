@@ -1,32 +1,17 @@
-import React, { useRef } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import styled from "styled-components";
-import { postTodos } from "../redux/modules/todosSlice";
+import useInputs from "../hooks/useInputs";
 
 const Inputs = () => {
-  const dispatch = useDispatch();
-  const titleRef = useRef(null);
-  const contentRef = useRef(null);
-
-  const handlePostTodo = () => {
-    const title = titleRef.current?.value;
-    const content = contentRef.current?.value;
-    if (!title || !content) {
-      return alert("모든 값을 입력해주세요.");
-    }
-
-    dispatch(postTodos({ title, content }));
-    titleRef.current.value = "";
-    contentRef.current.value = "";
-  };
+  const { title, content, changeTitle, changeContent, handlePostTodo } = useInputs();
 
   return (
     <Container>
       <Wrapper>
         <h4>제목</h4>
-        <Input ref={titleRef} />
+        <Input value={title} onChange={changeTitle} />
         <h4>내용</h4>
-        <Input ref={contentRef} />
+        <Input value={content} onChange={changeContent} />
         <ButtonWrapper>
           <CreateButton onClick={handlePostTodo}>작성</CreateButton>
         </ButtonWrapper>
