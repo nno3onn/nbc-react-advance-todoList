@@ -1,12 +1,13 @@
+import { useState } from "react";
 import styled from "styled-components";
+import useInput from "../hooks/useInput";
 import useTodo from "../hooks/useTodo";
 
 const TodoCard = ({ data: { id, title, content } }) => {
-  const { isEdit, editTitle, editContent, handleEditTitle, handleEditContent, handleUpdateTodo, handleDeleteTodo, handleIsEdit } = useTodo({
-    id,
-    title,
-    content,
-  });
+  const [isEdit, setIsEdit] = useState();
+  const [editTitle, handleEditTitle] = useInput(title);
+  const [editContent, handleEditContent] = useInput(content);
+  const { handleUpdateTodo, handleDeleteTodo } = useTodo({ id, editTitle, editContent, setIsEdit });
 
   return (
     <Container>
@@ -23,8 +24,8 @@ const TodoCard = ({ data: { id, title, content } }) => {
       )}
 
       <ButtonWrapper>
-        {isEdit ? <DeletBtn onClick={() => handleUpdateTodo()}>완료</DeletBtn> : <DeletBtn onClick={handleIsEdit}>수정</DeletBtn>}
-        <DeletBtn onClick={() => handleDeleteTodo(id)}>삭제</DeletBtn>
+        {isEdit ? <DeleteBtn onClick={() => handleUpdateTodo()}>완료</DeleteBtn> : <DeleteBtn onClick={() => setIsEdit(true)}>수정</DeleteBtn>}
+        <DeleteBtn onClick={() => handleDeleteTodo(id)}>삭제</DeleteBtn>
       </ButtonWrapper>
     </Container>
   );
@@ -58,7 +59,7 @@ const Button = styled.div`
     box-shadow: 1px 1px 8px #aaa;
   }
 `;
-const DeletBtn = styled(Button)`
+const DeleteBtn = styled(Button)`
   background-color: #ddd;
 `;
 

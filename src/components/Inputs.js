@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import useInputs from "../hooks/useInputs";
+import useInput from "../hooks/useInput";
+import useInputs from "../hooks/usePostTodo";
 
 const Inputs = () => {
-  const { title, content, changeTitle, changeContent, handlePostTodo } = useInputs();
+  const [title, changeTitle, setTitle] = useInput();
+  const [content, changeContent, setContent] = useInput();
+  const handlePostTodo = useInputs({ title, content, setTitle, setContent });
 
   return (
     <Container>
